@@ -10,7 +10,7 @@ class TestMemoqSoap(unittest.TestCase):
         self.soap_client = MemoqSoap("some_url", "some_key")
 
     def test_init(self):
-        self.assertEqual(self.soap_client._wsdl_url, "some_url")
+        self.assertEqual(self.soap_client._wsdl_base_url, "some_url")
 
     def test_generate_payload(self):
         template = '<template><soap:Body></soap:Body></template>'
@@ -26,7 +26,7 @@ class TestMemoqSoap(unittest.TestCase):
         mock_response._content = b'<s:Envelope><s:Body><ListTMsResponse><ListTMsResult><TMInfo>list</TMInfo></ListTMsResult></ListTMsResponse></s:Body></s:Envelope>'
         mock_request.return_value = mock_response
 
-        status, data = self.soap_client.make_soap_request(route='blah', interface="ITMService", memoq_type="TMInfo", action="ListTMs")
+        status, data = self.soap_client.make_soap_request(interface="ITMService", memoq_type="TMInfo", action="ListTMs")
         self.assertEqual(status, 200)
         self.assertIsNotNone(data)
 

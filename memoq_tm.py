@@ -12,7 +12,7 @@ class MemoqTm:
     def __init__(self, soap_client: mq.MemoqSoap) -> None:
         """ Initialize the MemoqTm class with a MemoqSoap object.
         :param soap_client: SOAP client that will make calls to the CAT tool's API
-        >>> soap = mq.MemoqSoap(wsdl_url="some_url", api_key="some_key")
+        >>> soap = mq.MemoqSoap(wsdl_base_url="some_url", api_key="some_key")
         >>> tm_client = MemoqTm(soap)
         >>> isinstance(tm_client.soap_client, mq.MemoqSoap)
         True
@@ -24,14 +24,16 @@ class MemoqTm:
         """ Get the list of TMs from the memoQ Server.
         :return: status code and response content
         """
-        response_status, data = self.soap_client.make_soap_request(interface='ITMService', memoq_type='TMInfo', action='ListTMs')
+        route = '/memoqservices/tm/TMService'
+        response_status, data = self.soap_client.make_soap_request(route=route, interface='ITMService', memoq_type='TMInfo', action='ListTMs')
         return response_status, data
 
     def get_tb_list(self) -> Tuple[int, Optional[str]]:
         """ Get the list of term bases from the memoQ Server.
         :return: status code and response content
         """
-        response_status, data = self.soap_client.make_soap_request(interface='ITBService', memoq_type='TBInfo', action='ListTBs')
+        route = '/memoqservices/tb/TBService'
+        response_status, data = self.soap_client.make_soap_request(route=route, interface='ITBService', memoq_type='TBInfo', action='ListTBs')
         return response_status, data
 
 

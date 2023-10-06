@@ -13,16 +13,16 @@ MEMOQ_XML_NAMESPACE = 'http://kilgray.com/memoqservices/2007'
 class MemoqSoap:
     """ A class to interact with memoQ's Web API using SOAP. """
 
-    def __init__(self, wsdl_url: str, api_key: str) -> None:
+    def __init__(self, wsdl_base_url: str, api_key: str) -> None:
         """ Initialize the memoq SOAP class
-        :param wsdl_url:
+        :param wsdl_base_url:
         :param api_key:
-        >>> MemoqSoap("some_url", "some_key")._wsdl_url
+        >>> MemoqSoap("some_url", "some_key")._wsdl_base_url
         'some_url'
         """
 
-        # Private Attributes
-        self._wsdl_url = wsdl_url
+        # Protected Attributes
+        self._wsdl_base_url = wsdl_base_url
         self._api_key = api_key
         self._namespace = 'http://kilgray.com/memoqservices/2007'
         self._payload_template = f"""<?xml version="1.0" encoding="utf-8"?>
@@ -35,8 +35,7 @@ class MemoqSoap:
 
         # Public Attributes
         self.headers = {'Content-Type': 'text/xml; charset=utf-8', 'SOAPAction': ''}
-
-        # Response Object Attributes for logging and debugging
+        self.route = None
         self.payload = None
         self.response = None
         self.response_status_code = None
@@ -47,7 +46,7 @@ class MemoqSoap:
     @staticmethod
     def generate_payload(template: str, payload_body: str) -> str:
         """ Generate the SOAP payload.
-        >>> mq = MemoqSoap(wsdl_url="some_url", api_key="some_key")
+        >>> mq = MemoqSoap(wsdl_base_url="some_url", api_key="some_key")
         >>> t = '<template><soap:Body></soap:Body></template>'
         >>> p = '<ListTMs xmlns="some_namespace"></ListTMs>'
         >>> mq.generate_payload(template=t, payload_body=p)
@@ -59,24 +58,27 @@ class MemoqSoap:
 
         return payload
 
-    def make_soap_request(self, interface: str, memoq_type: str, action: str) -> requests.Response:
+    def make_soap_request(self, route: str, interface: str, memoq_type: str, action: str) -> requests.Response:
         """ Make a SOAP request to Memoq API.
+        :param route: route to the service requested
         :param interface: the interface to be used
         :param memoq_type: the type of object to be retrieved
         :param action: the action to be performed
         :return: the response from the CAT tool's API
         """
 
+        url = f'{self._wsdl_base_url}/{route}'
         soap_action = f"{interface}/{action}"
         payload_body = f'<{action} xmlns="{self._namespace}"></{action}>'
+        self.route = route
         self.payload = self.generate_payload(self._payload_template, payload_body)
         self.headers['SOAPAction'] = f"{self._namespace}/{soap_action}"
 
-        print(f"self._wsdl_url: {self._wsdl_url}")
+        print(f"self._wsdl_url: {self._wsdl_base_url}")
         print(f"self.headers: {self.headers}")
         print(f"self.payload: {self.payload}")
 
-        self.response = requests.request("POST", self._wsdl_url, headers=self.headers, data=self.payload)
+        self.response = requests.request("POST", url, headers=self.headers, data=self.payload)
         # self.response = requests.request(method="POST", url=url, headers=self.headers, data=self.payload)
         # self.response = requests.request("POST", self._wsdl_url, headers=self.headers, data=self.payload)
         self.response_status_code = self.response.status_code
