@@ -1,13 +1,12 @@
 from typing import Tuple, Optional
+import os
+import configparser
 import requests
 import json
 import xmltodict
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
-
-
-MEMOQ_XML_NAMESPACE = 'http://kilgray.com/memoqservices/2007'
 
 
 class MemoqSoap:
@@ -21,10 +20,15 @@ class MemoqSoap:
         'some_url'
         """
 
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        config_path = os.path.join(current_dir, 'references.ini')
+        config = configparser.ConfigParser()
+        config.read(config_path)
+
         # Protected Attributes
         self._wsdl_base_url = wsdl_base_url
         self._api_key = api_key
-        self._namespace = 'http://kilgray.com/memoqservices/2007'
+        self._namespace = config.get('SCHEMA', 'NAMESPACE')
         self._payload_template = f"""<?xml version="1.0" encoding="utf-8"?>
             <soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
                 <soap:Header>
@@ -33,7 +37,7 @@ class MemoqSoap:
                 <soap:Body></soap:Body>
             </soap:Envelope>"""
 
-        # Public Attributes
+        # Public Fields
         self.headers = {'Content-Type': 'text/xml; charset=utf-8', 'SOAPAction': ''}
         self.route = None
         self.payload = None
@@ -42,6 +46,12 @@ class MemoqSoap:
         self.response_content = None
         self.response_text = None
         self.error_message = None
+
+    def _load_config(self):
+        config = configparser.ConfigParser()
+        config.read('references.ini')
+        api_url = config.get('API', 'API_URL')
+        api_key = config.get('API', 'API_KEY')
 
     @staticmethod
     def generate_payload(template: str, payload_body: str) -> str:

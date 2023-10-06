@@ -1,7 +1,7 @@
 from typing import Tuple, Optional
 import logging
 
-import memoq_soap as mq
+from src import memoq_soap as mq
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -20,7 +20,7 @@ class MemoqTm:
         self.soap_client = soap_client
         self.service = 'ITMService'
 
-    def get_tm_list(self) -> Tuple[int, Optional[str]]:
+    def list_tms(self) -> Tuple[int, Optional[str]]:
         """ Get the list of TMs from the memoQ Server.
         :return: status code and response content
         """
@@ -28,7 +28,7 @@ class MemoqTm:
         response_status, data = self.soap_client.make_soap_request(route=route, interface='ITMService', memoq_type='TMInfo', action='ListTMs')
         return response_status, data
 
-    def get_tb_list(self) -> Tuple[int, Optional[str]]:
+    def list_tbs(self) -> Tuple[int, Optional[str]]:
         """ Get the list of term bases from the memoQ Server.
         :return: status code and response content
         """

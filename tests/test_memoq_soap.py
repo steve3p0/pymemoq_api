@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch
 import requests
-from memoq_soap import MemoqSoap
+from src.memoq_soap import MemoqSoap
 
 
 class TestMemoqSoap(unittest.TestCase):
@@ -26,7 +26,8 @@ class TestMemoqSoap(unittest.TestCase):
         mock_response._content = b'<s:Envelope><s:Body><ListTMsResponse><ListTMsResult><TMInfo>list</TMInfo></ListTMsResult></ListTMsResponse></s:Body></s:Envelope>'
         mock_request.return_value = mock_response
 
-        status, data = self.soap_client.make_soap_request(interface="ITMService", memoq_type="TMInfo", action="ListTMs")
+        route = '/memoqservices/tm/TMService'
+        status, data = self.soap_client.make_soap_request(route=route, interface="ITMService", memoq_type="TMInfo", action="ListTMs")
         self.assertEqual(status, 200)
         self.assertIsNotNone(data)
 
