@@ -36,5 +36,6 @@ class TestMemoqSoap(unittest.TestCase):
         result = self.soap_client.parse_xml_response(xml, "TMInfo", "ListTMs")
         self.assertEqual(result, "list")
 
+
 if __name__ == '__main__':
     unittest.main()
