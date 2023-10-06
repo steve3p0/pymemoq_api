@@ -24,14 +24,14 @@ class MemoqTm:
         """ Get the list of TMs from the memoQ Server.
         :return: status code and response content
         """
-        response_status, data = self.soap_client.make_soap_request(route='/tm/TMService', interface='ITMService', memoq_type='TMInfo', action='ListTMs')
+        response_status, data = self.soap_client.make_soap_request(interface='ITMService', memoq_type='TMInfo', action='ListTMs')
         return response_status, data
 
     def get_tb_list(self) -> Tuple[int, Optional[str]]:
         """ Get the list of term bases from the memoQ Server.
         :return: status code and response content
         """
-        response_status, data = self.soap_client.make_soap_request(route='/tb/TBService', interface='ITBService', memoq_type='TBInfo', action='ListTBs')
+        response_status, data = self.soap_client.make_soap_request(interface='ITBService', memoq_type='TBInfo', action='ListTBs')
         return response_status, data
 
 

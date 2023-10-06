@@ -59,9 +59,8 @@ class MemoqSoap:
 
         return payload
 
-    def make_soap_request(self, route: str, interface: str, memoq_type: str, action: str) -> requests.Response:
+    def make_soap_request(self, interface: str, memoq_type: str, action: str) -> requests.Response:
         """ Make a SOAP request to Memoq API.
-        :param route: the route appended to wdl_url
         :param interface: the interface to be used
         :param memoq_type: the type of object to be retrieved
         :param action: the action to be performed
@@ -73,8 +72,12 @@ class MemoqSoap:
         self.payload = self.generate_payload(self._payload_template, payload_body)
         self.headers['SOAPAction'] = f"{self._namespace}/{soap_action}"
 
-        url = f"{self._wsdl_url}{route}"
-        self.response = requests.request(method="POST", url=url, headers=self.headers, data=self.payload)
+        print(f"self._wsdl_url: {self._wsdl_url}")
+        print(f"self.headers: {self.headers}")
+        print(f"self.payload: {self.payload}")
+
+        self.response = requests.request("POST", self._wsdl_url, headers=self.headers, data=self.payload)
+        # self.response = requests.request(method="POST", url=url, headers=self.headers, data=self.payload)
         # self.response = requests.request("POST", self._wsdl_url, headers=self.headers, data=self.payload)
         self.response_status_code = self.response.status_code
         self.response_content = self.response.content.decode()
