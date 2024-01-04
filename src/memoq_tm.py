@@ -24,8 +24,15 @@ class MemoqTm:
         """ Get the list of TMs from the memoQ Server.
         :return: status code and response content
         """
-        route = '/memoqservices/tm/TMService'
-        response_status, data = self.soap_client.make_soap_request(route=route, interface='ITMService', memoq_type='TMInfo', action='ListTMs')
+        route = 'memoqservices/tm/TMService'
+        response_status, data = self.soap_client.make_soap_request(
+            route=route,
+            interface='ITMService',
+            memoq_type='TMInfo',
+            action='ListTMs',
+            # srcLang='eng',
+            )
+
         return response_status, data
 
     def create_tm(self, tm_name: str, source_lang: str, target_lang: str) -> Tuple[int, Optional[str]]:
@@ -35,7 +42,7 @@ class MemoqTm:
         :param target_lang: Target language code
         :return: status code and response content
         """
-        route = '/memoqservices/tm/TMService'
+        route = 'memoqservices/tm/TMService'
         params = {
             'tmName': tm_name,
             'sourceLangCode': source_lang,
@@ -143,14 +150,14 @@ class MemoqTm:
         #  ReplyAction="http://kilgray.com/memoqservices/2007/ITMService/GetTMInfoResponse")]
         #  C:\workspace\memoq_api\mq-ws-api-v9.14\DemoClient\Service References\TMService\Reference.cs	1666	114
 
-
-        route = '/memoqservices/tm/TMService'  # The SOAP route for the TM service
+        # route = 'memoqservices/tm/TMService'
+        route = 'memoqservices/tm/TMService'  # The SOAP route for the TM service
         response_status, data = self.soap_client.make_soap_request(
             route=route,
-            interface='ITMService',  # The interface for the TM service
+            interface='ITMService',
             memoq_type='TMInfo',  # The type of data you're expecting
             action='GetTMInfo',  # The SOAP action you're calling
-            guid=guid  # The GUID of the TM you're querying
+            tmGuid=guid  # The GUID of the TM you're querying
         )
         return response_status, data
 
